@@ -1,0 +1,13 @@
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="plat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0E0E0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A0A0A0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Band -->
+  <circle cx="250" cy="250" r="120" stroke="url(#plat)" stroke-width="25" fill="none" />
+  <!-- Diamond -->
+  <polygon points="250,130 220,100 280,100" fill="#E0FFFF" />
+  <polygon points="250,180 220,130 280,130" fill="#00FFFF" opacity="0.8"/>
+</svg>

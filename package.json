@@ -1,0 +1,31 @@
+{
+    "name": "jewelfit-3d",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*",
+        "packages/@jewelfit/*"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+        "dev:api": "cd apps/api && npm run dev",
+        "dev:web": "cd apps/web && npm run dev",
+        "build": "yarn workspaces run build",
+        "test": "yarn workspaces run test",
+        "lint": "yarn workspaces run lint",
+        "seed": "yarn workspace @jewelfit/api seed",
+        "docker:up": "docker-compose up --build",
+        "docker:down": "docker-compose down",
+        "migrate": "yarn workspace @jewelfit/api migrate"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "@prisma/client": "^5.22.0",
+        "merge2": "^1.4.1",
+        "to-regex-range": "^5.0.1"
+    }
+}

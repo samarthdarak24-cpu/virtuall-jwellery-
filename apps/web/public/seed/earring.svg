@@ -1,0 +1,15 @@
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F0F8FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C0C0C0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Stud -->
+  <circle cx="250" cy="150" r="15" fill="black" />
+  <!-- Dangle -->
+  <path d="M250,150 L250,350" stroke="url(#silver)" stroke-width="5" />
+  <!-- Gem -->
+  <polygon points="250,350 200,450 300,450" fill="url(#silver)" stroke="white" stroke-width="2"/>
+  <circle cx="250" cy="420" r="10" fill="#00BFFF" />
+</svg>

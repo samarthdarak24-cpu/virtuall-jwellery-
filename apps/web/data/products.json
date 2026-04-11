@@ -1,0 +1,49 @@
+[
+  {
+    "id": "seed-3",
+    "name": "Platinum Solitaire",
+    "price": 2499,
+    "category": "ring",
+    "image": "/seed/ring.svg"
+  },
+  {
+    "id": "1764964115540",
+    "name": "necklace",
+    "price": 1200,
+    "category": "necklace",
+    "image": "/uploads/file-1764964115488-540841491.png",
+    "createdAt": "2025-12-05T19:48:35.540Z"
+  },
+  {
+    "id": "1764967472667",
+    "name": "braclate",
+    "price": 200,
+    "category": "bracelet",
+    "image": "/uploads/file-1764967472657-766603490.png",
+    "createdAt": "2025-12-05T20:44:32.667Z"
+  },
+  {
+    "id": "1764972170720",
+    "name": "necklace",
+    "price": 2111,
+    "category": "necklace",
+    "image": "/uploads/product-1764972170214.png",
+    "createdAt": "2025-12-05T22:02:50.720Z"
+  },
+  {
+    "id": "1764972293059",
+    "name": "necklace",
+    "price": 900,
+    "category": "necklace",
+    "image": "/uploads/product-1764972292981.png",
+    "createdAt": "2025-12-05T22:04:53.059Z"
+  },
+  {
+    "id": "1764975498678",
+    "name": "necklace",
+    "price": 1200,
+    "category": "necklace",
+    "image": "/uploads/product-1764975498469.png",
+    "createdAt": "2025-12-05T22:58:18.678Z"
+  }
+]
