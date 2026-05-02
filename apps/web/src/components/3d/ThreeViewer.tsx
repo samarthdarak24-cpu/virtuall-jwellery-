@@ -25,21 +25,26 @@ interface ThreeViewerProps {
 
 // Projection component for the user face to wrap around the head
 function FaceDecal({ url }: { url: string }) {
-    const texture = useTexture(url);
-    return (
-        <Decal
-            position={[0, 0, 0.28]} 
-            rotation={[0, 0, 0]} 
-            scale={[0.48, 0.58, 1]}
-        >
-            <meshBasicMaterial 
-                map={texture} 
-                transparent 
-                polygonOffset 
-                polygonOffsetFactor={-10} 
-            />
-        </Decal>
-    );
+    try {
+        const texture = useTexture(url);
+        return (
+            <Decal
+                position={[0, 0, 0.28]} 
+                rotation={[0, 0, 0]} 
+                scale={[0.48, 0.58, 1]}
+            >
+                <meshBasicMaterial 
+                    map={texture} 
+                    transparent 
+                    polygonOffset 
+                    polygonOffsetFactor={-10} 
+                />
+            </Decal>
+        );
+    } catch (error) {
+        console.error('Failed to load face texture:', error);
+        return null;
+    }
 }
 
 // Wrapper for Image to handle safe loading and positioning
@@ -90,6 +95,7 @@ function Mannequin({ gender, product, material: userMaterial, skinTone, userFace
         reflectivity: 1,
         clearcoat: 0.5,
         clearcoatRoughness: 0.1,
+        side: THREE.FrontSide, // Only render outside
     }), [userMaterial.baseColor, userMaterial.roughness, userMaterial.metalness, isMale]);
 
     const skinMaterial = useMemo(() => new THREE.MeshPhysicalMaterial({
@@ -97,12 +103,14 @@ function Mannequin({ gender, product, material: userMaterial, skinTone, userFace
         roughness: 0.6,
         metalness: 0.02,
         reflectivity: 0.3,
+        side: THREE.FrontSide, // Only render outside
     }), [isMale, skinTone]);
 
     const detailMaterial = useMemo(() => new THREE.MeshStandardMaterial({
         color: '#111',
         roughness: 0.1,
         metalness: 1,
+        side: THREE.FrontSide, // Only render outside
     }), []);
 
     const headScale = isMale ? 1 : 0.9;
@@ -174,11 +182,13 @@ function Mannequin({ gender, product, material: userMaterial, skinTone, userFace
                         )}
                         {product?.category.toLowerCase().includes('earring') && (
                             <>
-                                <group position={[0.36, -0.15, 0.05]} rotation={[0, Math.PI / 2, 0]}>
-                                    <AccessoryImage url={product.image} scale={0.3} />
+                                {/* Right Earring */}
+                                <group position={[0.38, -0.05, 0.08]} rotation={[0, Math.PI / 3, 0]}>
+                                    <AccessoryImage url={product.image} scale={0.6} />
                                 </group>
-                                <group position={[-0.36, -0.15, 0.05]} rotation={[0, -Math.PI / 2, 0]}>
-                                    <AccessoryImage url={product.image} scale={0.3} />
+                                {/* Left Earring */}
+                                <group position={[-0.38, -0.05, 0.08]} rotation={[0, -Math.PI / 3, 0]}>
+                                    <AccessoryImage url={product.image} scale={0.6} />
                                 </group>
                             </>
                         )}

@@ -1,11 +1,26 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
     const { data: session } = useSession();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+
+    // Fetch profile image when user is logged in
+    useEffect(() => {
+        if (session?.user?.email) {
+            fetch(`/api/user/profile?email=${encodeURIComponent(session.user.email)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.profileImage) {
+                        setProfileImage(data.profileImage);
+                    }
+                })
+                .catch(err => console.error('Failed to load profile image:', err));
+        }
+    }, [session]);
 
     return (
         <motion.nav
@@ -18,6 +33,21 @@ export default function Navbar() {
                 <div className="flex items-center justify-between h-20">
                     {/* Logo - Centered on mobile, left on desktop */}
                     <Link href="/" className="flex items-center space-x-3 group">
+                        {/* Profile Picture Icon (if logged in) */}
+                        {session && (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-luxury-gold to-luxury-champagne p-[2px] flex-shrink-0">
+                                <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                                    {profileImage ? (
+                                        <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-sm font-bold text-luxury-gold">
+                                            {session.user?.name?.[0] || session.user?.email?.[0] || 'U'}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                        
                         <motion.div
                             className="relative"
                             whileHover={{ rotate: 360 }}

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -23,7 +23,7 @@ model UserImage {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   url       String
-  meta      Json?
+  meta      String?  // JSON as String for SQLite
   createdAt DateTime @default(now())
 }
 
@@ -43,20 +43,13 @@ model ProductAsset {
   id        String    @id @default(uuid())
   product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
-  type      AssetType
+  type      String    // AssetType as String for SQLite
   url       String
-  metadata  Json?
+  metadata  String?   // JSON as String for SQLite
   createdAt DateTime  @default(now())
 }
 
-enum AssetType {
-  IMAGE_2D
-  MODEL_GLTF
-  PBR_BASECOLOR
-  PBR_NORMAL
-  PBR_METALROUGH
-  HDRI
-}
+// AssetType values: IMAGE_2D, MODEL_GLTF, PBR_BASECOLOR, PBR_NORMAL, PBR_METALROUGH, HDRI
 
 model TryOnEvent {
   id        String     @id @default(uuid())
@@ -64,15 +57,12 @@ model TryOnEvent {
   user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
   productId String?
   product   Product?   @relation(fields: [productId], references: [id], onDelete: SetNull)
-  mode      TryOnMode
-  metadata  Json?
+  mode      String     // TryOnMode as String for SQLite
+  metadata  String?    // JSON as String for SQLite
   createdAt DateTime   @default(now())
 }
 
-enum TryOnMode {
-  PHOTO
-  MODEL3D
-}
+// TryOnMode values: PHOTO, MODEL3D
 
 model Order {
   id         String   @id @default(uuid())

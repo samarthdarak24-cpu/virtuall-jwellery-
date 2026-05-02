@@ -3,7 +3,7 @@ const nextConfig = {
     reactStrictMode: true,
     transpilePackages: ['@jewelfit/types'],
     images: {
-        domains: ['localhost', 'jewelfit-assets.s3.amazonaws.com'],
+        domains: ['localhost', 'jewelfit-assets.s3.amazonaws.com', 'images.unsplash.com'],
     },
     webpack: (config) => {
         config.externals.push({

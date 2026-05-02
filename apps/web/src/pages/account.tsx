@@ -1,11 +1,13 @@
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Navbar from '@/components/layout/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function AccountPage() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState<'profile' | 'history'>('profile');
 
     // State for all form fields
@@ -42,31 +44,55 @@ export default function AccountPage() {
         }
     };
 
+    // Redirect to login if not authenticated
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push('/auth/login?redirect=/account');
+        }
+    }, [status, router]);
+
     // Fetch saved profile on mount
     useEffect(() => {
-        fetch('/api/user/profile')
-            .then(res => res.json())
-            .then(data => {
-                if (data && !data.error) {
-                    setFormData(prev => ({
-                        ...prev,
-                        fullName: data.fullName || prev.fullName,
-                        phone: data.phone || '',
-                        dob: data.dob || '',
-                        gender: data.gender || '',
-                        ringSize: data.ringSize || '',
-                        address: data.address || '',
-                        city: data.city || '',
-                        country: data.country || '',
-                        postalCode: data.postalCode || '',
-                    }));
-                    if (data.profileImage) {
-                        setProfileImage(data.profileImage);
+        if (session?.user?.email) {
+            fetch(`/api/user/profile?email=${encodeURIComponent(session.user.email)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        setFormData(prev => ({
+                            ...prev,
+                            fullName: data.fullName || session.user?.name || '',
+                            phone: data.phone || '',
+                            dob: data.dob || '',
+                            gender: data.gender || '',
+                            ringSize: data.ringSize || '',
+                            address: data.address || '',
+                            city: data.city || '',
+                            country: data.country || '',
+                            postalCode: data.postalCode || '',
+                        }));
+                        if (data.profileImage) {
+                            setProfileImage(data.profileImage);
+                        }
                     }
-                }
-            })
-            .catch(err => console.error('Failed to load profile:', err));
-    }, []);
+                })
+                .catch(err => console.error('Failed to load profile:', err));
+        }
+    }, [session]);
+
+    // Show loading while checking authentication
+    if (status === 'loading') {
+        return (
+            <div className="min-h-screen bg-black text-white flex flex-col">
+                <Navbar />
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="w-16 h-16 border-4 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-gray-400">Loading your account...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (!session) {
         return (
@@ -91,29 +117,46 @@ export default function AccountPage() {
     };
 
     const handleSave = async () => {
+        if (!session?.user?.email) {
+            alert('Session expired. Please login again.');
+            return;
+        }
+
         setLoading(true);
         try {
+            console.log('Saving profile data:', formData);
+            
             const res = await fetch('/api/user/profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    email: session.user.email, // Include email in request body
                     ...formData,
                     profileImage // Send base64 image
                 }),
             });
+            
             const data = await res.json();
-
+            console.log('Save response:', data);
+            
+            if (!res.ok) {
+                throw new Error(data.error || data.details || 'Failed to save profile');
+            }
+            
+            // Show success message
             const btn = document.getElementById('save-button');
             if (btn) {
-                const originalText = btn.innerText;
-                btn.innerText = 'Saved!';
+                const originalClasses = btn.className;
+                btn.innerText = '✅ Saved!';
+                btn.className = btn.className.replace('bg-luxury-gold', 'bg-green-500');
                 setTimeout(() => {
                     btn.innerText = 'Save Changes';
+                    btn.className = originalClasses;
                 }, 2000);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error saving profile:', error);
-            alert('Failed to save profile');
+            alert(`Failed to save profile: ${error?.message || 'Unknown error'}`);
         } finally {
             setLoading(false);
         }

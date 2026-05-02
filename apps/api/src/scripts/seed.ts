@@ -7,7 +7,7 @@ async function main() {
     console.log('🌱 Seeding database...');
 
     // Create demo user
-    const hashedPassword = await bcrypt.hash('Demo123!', 12);
+    const hashedPassword = await bcrypt.hash('Demo@123!', 12);
     const user = await prisma.user.upsert({
         where: { email: 'demo@jewelfit.test' },
         update: {},
@@ -19,6 +19,7 @@ async function main() {
     });
 
     console.log('✅ Created demo user:', user.email);
+    console.log('   Password: Demo@123!');
 
     // Create products
     const products = [
@@ -115,9 +116,9 @@ async function main() {
                 ...productInfo,
                 assets: {
                     create: assets.map(asset => ({
-                        type: asset.type as any,
+                        type: asset.type,
                         url: asset.url,
-                        metadata: asset.metadata,
+                        metadata: asset.metadata ? JSON.stringify(asset.metadata) : null,
                     })),
                 },
             },

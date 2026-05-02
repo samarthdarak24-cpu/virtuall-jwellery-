@@ -54,7 +54,8 @@ export default function ThreeDMode() {
     });
 
     useEffect(() => {
-        if (session?.user?.image) {
+        // Only set user face if it's a valid image URL
+        if (session?.user?.image && session.user.image.startsWith('http')) {
             setUserFace(session.user.image);
         }
     }, [session?.user?.image]);
@@ -92,30 +93,65 @@ export default function ThreeDMode() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-yellow-50 text-gray-900 font-sans overflow-x-hidden relative">
+            {/* Animated Gold Particles Background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {[...Array(30)].map((_, i) => {
+                    const randomLeft = Math.random() * 100;
+                    const randomTop = Math.random() * 100;
+                    const randomDuration = 4 + Math.random() * 3;
+                    const randomDelay = Math.random() * 3;
+                    
+                    return (
+                        <motion.div
+                            key={i}
+                            className="absolute w-2 h-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full shadow-lg"
+                            style={{
+                                left: `${randomLeft}%`,
+                                top: `${randomTop}%`,
+                            }}
+                            initial={{ opacity: 0 }}
+                            animate={{
+                                y: [0, -40, 0],
+                                opacity: [0.3, 1, 0.3],
+                                scale: [0.5, 1.2, 0.5],
+                            }}
+                            transition={{
+                                duration: randomDuration,
+                                repeat: Infinity,
+                                delay: randomDelay,
+                            }}
+                        />
+                    );
+                })}
+                {/* Gold Glow Effects */}
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-yellow-300/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-amber-400/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1.5s'}}></div>
+            </div>
+
             <Navbar />
 
-            <main className="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-20">
+            <main className="relative pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-20">
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* LEFT SIDE: 3D VIEWPORT */}
                     <div className="flex-1">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="relative group h-[700px] w-full rounded-[2.5rem] overflow-hidden border border-white/10 shadow-luxury bg-gradient-to-b from-neutral-900 via-neutral-950 to-black"
+                            className="relative group h-[700px] w-full rounded-[2.5rem] overflow-hidden border-2 border-yellow-200 shadow-2xl shadow-yellow-500/20 bg-black"
                         >
                             {/* Floating Toolbar */}
                             <div className="absolute top-6 left-6 z-20 flex gap-2">
-                                <div className="bg-black/40 backdrop-blur-xl p-1 rounded-2xl border border-white/10 flex">
+                                <div className="bg-white/90 backdrop-blur-xl p-1 rounded-2xl border-2 border-yellow-200 flex shadow-lg">
                                     <button
                                         onClick={() => setGender('female')}
-                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${gender === 'female' ? 'bg-luxury-gold text-black shadow-lg shadow-yellow-500/20' : 'text-neutral-400 hover:text-white'}`}
+                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${gender === 'female' ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/30' : 'text-gray-600 hover:text-gray-900'}`}
                                     >
                                         FEMALE
                                     </button>
                                     <button
                                         onClick={() => setGender('male')}
-                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${gender === 'male' ? 'bg-luxury-gold text-black shadow-lg shadow-yellow-500/20' : 'text-neutral-400 hover:text-white'}`}
+                                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${gender === 'male' ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/30' : 'text-gray-600 hover:text-gray-900'}`}
                                     >
                                         MALE
                                     </button>
@@ -123,14 +159,14 @@ export default function ThreeDMode() {
                                 <button
                                     onClick={resetCamera}
                                     title="Reset Camera"
-                                    className="p-3 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-neutral-800 transition-colors"
+                                    className="p-3 bg-white/90 backdrop-blur-xl border-2 border-yellow-200 rounded-2xl hover:bg-yellow-50 transition-colors shadow-lg"
                                 >
                                     🔄
                                 </button>
                                 <button
                                     onClick={() => setAutoRotate(!autoRotate)}
                                     title="Toggle Rotation"
-                                    className={`p-3 backdrop-blur-xl border border-white/10 rounded-2xl transition-all ${autoRotate ? 'bg-luxury-gold/20 border-luxury-gold/50 text-luxury-gold' : 'bg-black/40 text-neutral-400'}`}
+                                    className={`p-3 backdrop-blur-xl border-2 rounded-2xl transition-all shadow-lg ${autoRotate ? 'bg-yellow-100 border-yellow-400 text-yellow-700' : 'bg-white/90 border-yellow-200 text-gray-600'}`}
                                 >
                                     🔃
                                 </button>
@@ -140,13 +176,13 @@ export default function ThreeDMode() {
                             <div className="absolute top-6 right-6 z-20 flex gap-2">
                                 <button
                                     onClick={takeScreenshot}
-                                    className="px-5 py-2.5 bg-luxury-gold text-black font-bold rounded-2xl hover:bg-white transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-yellow-500/20 flex items-center gap-2"
+                                    className="px-5 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-bold rounded-2xl hover:shadow-xl hover:shadow-yellow-500/30 transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2"
                                 >
                                     📸 Capture
                                 </button>
                             </div>
 
-                            <Canvas shadows gl={{ antialias: true, preserveDrawingBuffer: true }}>
+                            <Canvas shadows gl={{ antialias: true, preserveDrawingBuffer: true }} style={{ background: '#000000' }}>
                                 <PerspectiveCamera makeDefault position={[0, 1.5, 6]} fov={45} />
                                 <OrbitControls
                                     ref={orbitControlsRef}
@@ -159,9 +195,21 @@ export default function ThreeDMode() {
                                     target={[0, 1, 0]}
                                 />
 
-                                <Environment preset="city" blur={0.5} />
-                                <ambientLight intensity={0.4} />
-                                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+                                {/* HDRI Environment Lighting based on research paper */}
+                                <Environment 
+                                    preset={selectedLighting.preset as any} 
+                                    blur={0.5} 
+                                />
+                                <ambientLight intensity={0.5} />
+                                <spotLight 
+                                    position={selectedLighting.position as [number, number, number]} 
+                                    angle={0.15} 
+                                    penumbra={1} 
+                                    intensity={selectedLighting.intensity * 1.5} 
+                                    castShadow 
+                                />
+                                <pointLight position={[2, 2, 2]} intensity={0.5} />
+                                <pointLight position={[-2, 2, -2]} intensity={0.3} />
 
                                 <Suspense fallback={<Loader />}>
                                     <ThreeViewer
@@ -178,12 +226,12 @@ export default function ThreeDMode() {
 
                             {/* Info Overlay */}
                             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between pointer-events-none">
-                                <div className="bg-black/50 backdrop-blur-md p-6 rounded-3xl border border-white/5 max-w-xs animate-slide-up pointer-events-auto">
-                                    <div className="text-xs text-luxury-gold tracking-widest uppercase mb-1">{selectedProduct?.category}</div>
-                                    <h2 className="text-xl font-display font-medium text-white mb-3">
+                                <div className="bg-black/80 backdrop-blur-md p-6 rounded-3xl border-2 border-yellow-500/50 max-w-xs animate-slide-up pointer-events-auto shadow-xl shadow-yellow-500/20">
+                                    <div className="text-xs text-yellow-400 tracking-widest uppercase mb-1 font-bold">{selectedProduct?.category}</div>
+                                    <h2 className="text-xl font-display font-bold text-white mb-3">
                                         {selectedProduct?.name || 'Loading Model...'}
                                     </h2>
-                                    <p className="text-sm text-neutral-400 leading-relaxed">
+                                    <p className="text-sm text-gray-300 leading-relaxed">
                                         Experience the finest craftsmanship in full 3D. Inspect every detail with our zoom and rotate tools.
                                     </p>
                                 </div>
@@ -194,12 +242,12 @@ export default function ThreeDMode() {
                     {/* RIGHT SIDE: ADVANCED CONTROLS */}
                     <div className="w-full lg:w-[400px] space-y-6">
                         {/* Tab Switcher */}
-                        <div className="grid grid-cols-4 gap-2 bg-neutral-900/50 p-1.5 rounded-2xl border border-white/5">
+                        <div className="grid grid-cols-4 gap-2 bg-white/80 backdrop-blur-xl p-1.5 rounded-2xl border-2 border-yellow-200 shadow-lg">
                             {(['product', 'mannequin', 'material', 'lighting'] as const).map(tab => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
-                                    className={`py-2 rounded-xl text-[10px] uppercase font-black transition-all ${activeTab === tab ? 'bg-luxury-gold text-black shadow-lg shadow-yellow-500/20' : 'text-neutral-500 hover:text-white hover:bg-white/5'}`}
+                                    className={`py-2 rounded-xl text-[10px] uppercase font-black transition-all ${activeTab === tab ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/30' : 'text-gray-600 hover:text-gray-900 hover:bg-yellow-50'}`}
                                 >
                                     {tab}
                                 </button>
@@ -214,26 +262,26 @@ export default function ThreeDMode() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="p-6 bg-neutral-900 rounded-[2rem] border border-white/5"
+                                    className="p-6 bg-white/90 backdrop-blur-xl rounded-[2rem] border-2 border-yellow-200 shadow-xl"
                                 >
-                                    <h3 className="text-lg font-display mb-4 text-luxury-gold">Catalog Selection</h3>
+                                    <h3 className="text-lg font-display mb-4 bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent font-bold">Catalog Selection</h3>
                                     <div className="grid grid-cols-2 gap-3 max-h-[480px] overflow-y-auto custom-scrollbar pr-2">
                                         {products.map(p => (
                                             <button
                                                 key={p.id}
                                                 onClick={() => setSelectedProduct(p)}
-                                                className={`group relative p-3 rounded-2xl border transition-all text-left overflow-hidden ${selectedProduct?.id === p.id
-                                                    ? 'border-luxury-gold bg-luxury-gold/10'
-                                                    : 'border-white/5 hover:border-white/20 bg-black/40'
+                                                className={`group relative p-3 rounded-2xl border-2 transition-all text-left overflow-hidden ${selectedProduct?.id === p.id
+                                                    ? 'border-yellow-400 bg-yellow-50'
+                                                    : 'border-yellow-200 hover:border-yellow-300 bg-white'
                                                     }`}
                                             >
-                                                <div className="aspect-square bg-white/[0.02] rounded-xl overflow-hidden mb-3">
+                                                <div className="aspect-square bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl overflow-hidden mb-3">
                                                     <img src={p.image} alt={p.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                                                 </div>
-                                                <div className="font-semibold text-xs truncate text-white">{p.name}</div>
-                                                <div className="text-[10px] text-neutral-500 uppercase">{p.category}</div>
+                                                <div className="font-semibold text-xs truncate text-gray-900">{p.name}</div>
+                                                <div className="text-[10px] text-gray-600 uppercase font-bold">{p.category}</div>
                                                 {selectedProduct?.id === p.id && (
-                                                    <div className="absolute top-2 right-2 w-2 h-2 bg-luxury-gold rounded-full shadow-[0_0_8px_#DAA520]" />
+                                                    <div className="absolute top-2 right-2 w-2 h-2 bg-yellow-500 rounded-full shadow-[0_0_8px_#eab308]" />
                                                 )}
                                             </button>
                                         ))}
@@ -248,11 +296,11 @@ export default function ThreeDMode() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="p-6 bg-neutral-900 rounded-[2rem] border border-white/5 space-y-6"
+                                    className="p-6 bg-white/90 backdrop-blur-xl rounded-[2rem] border-2 border-yellow-200 shadow-xl space-y-6"
                                 >
                                     <section className="space-y-4">
-                                        <h3 className="text-sm font-bold text-luxury-gold uppercase tracking-widest">Personalize Identity</h3>
-                                        <div className="bg-black/40 border border-white/5 p-5 rounded-3xl group relative overflow-hidden transition-all hover:border-luxury-gold/30">
+                                        <h3 className="text-sm font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent uppercase tracking-widest">Personalize Identity</h3>
+                                        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-yellow-200 p-5 rounded-3xl group relative overflow-hidden transition-all hover:border-yellow-400">
                                             {userFace ? (
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-luxury-gold shadow-lg ring-4 ring-luxury-gold/10">
@@ -388,7 +436,7 @@ export default function ThreeDMode() {
                                 setWireframe(false);
                                 resetCamera();
                             }}
-                            className="w-full py-4 rounded-2xl border border-red-500/20 text-red-400 text-xs font-bold hover:bg-red-500/10 transition-colors uppercase"
+                            className="w-full py-4 rounded-2xl border-2 border-red-300 text-red-600 text-xs font-bold hover:bg-red-50 transition-colors uppercase shadow-lg"
                         >
                             Reset Studio Defaults
                         </button>

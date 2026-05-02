@@ -27,7 +27,7 @@
                 "./src/*"
             ],
             "@jewelfit/types": [
-                "../../packages/types/src/index.ts"
+                "../../packages/@jewelfit/types/src/index.ts"
             ]
         }
     },

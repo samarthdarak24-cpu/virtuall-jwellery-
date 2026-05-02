@@ -1,49 +1,98 @@
 [
   {
-    "id": "seed-3",
+    "id": "1",
     "name": "Platinum Solitaire",
     "price": 2499,
     "category": "ring",
-    "image": "/seed/ring.svg"
+    "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop",
+    "description": "Elegant platinum solitaire ring with brilliant cut diamond"
   },
   {
-    "id": "1764964115540",
-    "name": "necklace",
+    "id": "2",
+    "name": "Gold Chain Necklace",
     "price": 1200,
     "category": "necklace",
-    "image": "/uploads/file-1764964115488-540841491.png",
-    "createdAt": "2025-12-05T19:48:35.540Z"
+    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop",
+    "description": "Classic 18K gold chain necklace"
   },
   {
-    "id": "1764967472667",
-    "name": "braclate",
+    "id": "3",
+    "name": "Diamond Bracelet",
     "price": 200,
     "category": "bracelet",
-    "image": "/uploads/file-1764967472657-766603490.png",
-    "createdAt": "2025-12-05T20:44:32.667Z"
+    "image": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop",
+    "description": "Stunning diamond tennis bracelet"
   },
   {
-    "id": "1764972170720",
-    "name": "necklace",
+    "id": "4",
+    "name": "Pearl Necklace",
     "price": 2111,
     "category": "necklace",
-    "image": "/uploads/product-1764972170214.png",
-    "createdAt": "2025-12-05T22:02:50.720Z"
+    "image": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop",
+    "description": "Elegant pearl strand necklace"
   },
   {
-    "id": "1764972293059",
-    "name": "necklace",
+    "id": "5",
+    "name": "Silver Pendant",
     "price": 900,
     "category": "necklace",
-    "image": "/uploads/product-1764972292981.png",
-    "createdAt": "2025-12-05T22:04:53.059Z"
+    "image": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop",
+    "description": "Sterling silver pendant with gemstone"
   },
   {
-    "id": "1764975498678",
-    "name": "necklace",
+    "id": "6",
+    "name": "Gold Necklace",
     "price": 1200,
     "category": "necklace",
-    "image": "/uploads/product-1764975498469.png",
-    "createdAt": "2025-12-05T22:58:18.678Z"
+    "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop",
+    "description": "Beautiful gold necklace with intricate design"
+  },
+  {
+    "id": "1777718035074",
+    "name": "NECKLACE",
+    "price": 234,
+    "category": "necklace",
+    "image": "/uploads/product-1777718034507.png",
+    "createdAt": "2026-05-02T10:33:55.074Z"
+  },
+  {
+    "id": "1777718291706",
+    "name": "neck",
+    "price": 10,
+    "category": "necklace",
+    "image": "/uploads/product-1777718291340.png",
+    "createdAt": "2026-05-02T10:38:11.706Z"
+  },
+  {
+    "id": "1777724558523",
+    "name": "ear",
+    "price": 1200,
+    "category": "earring",
+    "image": "/uploads/product-1777724558387.png",
+    "createdAt": "2026-05-02T12:22:38.523Z"
+  },
+  {
+    "id": "1777725823397",
+    "name": "bbann",
+    "price": 3456,
+    "category": "bracelet",
+    "image": "/uploads/product-1777725823127.png",
+    "createdAt": "2026-05-02T12:43:43.397Z"
+  },
+  {
+    "id": "1777726533580",
+    "name": "brace",
+    "price": 35678,
+    "category": "bracelet",
+    "image": "/uploads/product-1777726533322.png",
+    "createdAt": "2026-05-02T12:55:33.580Z"
+  },
+  {
+    "id": "1777727043656",
+    "name": "ring",
+    "price": 6789,
+    "category": "ring",
+    "image": "/uploads/product-1777727043417.png",
+    "createdAt": "2026-05-02T13:04:03.656Z"
   }
 ]
