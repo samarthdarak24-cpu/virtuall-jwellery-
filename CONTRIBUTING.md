@@ -39,7 +39,7 @@ Click the "Fork" button at the top right of the repository page.
 ### 2. Clone Your Fork
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/virtuall-jwellery-.git
+git clone https://github.com/samarthdarak24-cpu/virtuall-jwellery-.git
 cd virtuall-jwellery-
 ```
 

@@ -368,7 +368,7 @@ This project is licensed under the MIT License.
 
 ## 📞 Support
 
-For support, email your-email@example.com or open an issue in the GitHub repository.
+For support, open an issue in the GitHub repository or contact the maintainer.
 
 ---
 
