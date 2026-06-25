@@ -158,4 +158,85 @@ router.get('/me', async (req, res, next) => {
     }
 });
 
+// Google OAuth Sign-In/Register
+const googleAuthSchema = z.object({
+    email: z.string().email(),
+    name: z.string().optional(),
+    image: z.string().url().optional(),
+    googleId: z.string(),
+});
+
+router.post('/google', async (req, res, next) => {
+    try {
+        const { email, name, image, googleId } = googleAuthSchema.parse(req.body);
+
+        // Check if user exists
+        let user = await prisma.user.findUnique({ 
+            where: { email },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                avatarUrl: true,
+                createdAt: true,
+            },
+        });
+
+        // If user doesn't exist, create new account
+        if (!user) {
+            user = await prisma.user.create({
+                data: {
+                    email,
+                    name: name || email.split('@')[0], // Use email prefix as fallback name
+                    avatarUrl: image,
+                    password: null, // No password for OAuth users
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    avatarUrl: true,
+                    createdAt: true,
+                },
+            });
+        } else if (!user.avatarUrl && image) {
+            // Update avatar if user exists but has no avatar
+            user = await prisma.user.update({
+                where: { id: user.id },
+                data: { avatarUrl: image },
+                select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    avatarUrl: true,
+                    createdAt: true,
+                },
+            });
+        }
+
+        // Generate JWT
+        const token = jwt.sign(
+            { userId: user.id, email: user.email },
+            process.env.JWT_SECRET!,
+            { expiresIn: '7d' }
+        );
+
+        // Set HTTP-only cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.json({
+            user,
+            token,
+            message: user ? 'Welcome back!' : 'Account created successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;

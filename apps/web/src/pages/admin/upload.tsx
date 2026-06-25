@@ -1,8 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
-import { removeBackground } from '@imgly/background-removal';
 import { motion } from 'framer-motion';
+
+// Dynamic import for background removal to avoid SSR issues
+let removeBackground: any = null;
+if (typeof window !== 'undefined') {
+    import('@imgly/background-removal').then(module => {
+        removeBackground = module.removeBackground;
+    });
+}
 
 export default function AdminUpload() {
     const [name, setName] = useState('');
@@ -48,6 +55,19 @@ export default function AdminUpload() {
 
     const handleRemoveBackground = async () => {
         if (!originalUrl) return;
+        
+        // Check if removeBackground is loaded
+        if (!removeBackground) {
+            setMessage('⏳ Loading AI background removal module...');
+            try {
+                const module = await import('@imgly/background-removal');
+                removeBackground = module.removeBackground;
+            } catch (error) {
+                setMessage('❌ Failed to load background removal module.');
+                return;
+            }
+        }
+        
         setIsProcessing(true);
         setMessage('🚀 Removing background with advanced AI... (Fast & Accurate)');
 
@@ -57,7 +77,7 @@ export default function AdminUpload() {
             
             // Use the imgly library with optimized settings for speed
             const pngBlob = await removeBackground(blob, {
-                progress: (key, current, total) => {
+                progress: (key: string, current: number, total: number) => {
                     const percent = Math.round((current / total) * 100);
                     setMessage(`🚀 Processing: ${percent}% - ${key}`);
                 },

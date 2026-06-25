@@ -66,4 +66,57 @@ router.delete('/images/:id', async (req: AuthRequest, res, next) => {
     }
 });
 
+// Get user profile including avatar details
+router.get('/profile', async (req: AuthRequest, res, next) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.userId! },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                avatarUrl: true,
+                avatarType: true,
+                createdAt: true
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+const avatarSchema = z.object({
+    avatarUrl: z.string().url().or(z.string().startsWith('/')),
+    avatarType: z.enum(['vrm', 'glb']).optional(),
+});
+
+// Update user profile avatar details
+router.put('/profile/avatar', async (req: AuthRequest, res, next) => {
+    try {
+        const { avatarUrl, avatarType } = avatarSchema.parse(req.body);
+
+        const user = await prisma.user.update({
+            where: { id: req.userId! },
+            data: {
+                avatarUrl,
+                avatarType: avatarType || (avatarUrl.endsWith('.vrm') ? 'vrm' : 'glb'),
+            },
+        });
+
+        res.json({
+            success: true,
+            avatarUrl: user.avatarUrl,
+            avatarType: user.avatarType,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;

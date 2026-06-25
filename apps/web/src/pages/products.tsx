@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { useCartStore } from '@/store/cartStore';
 
 interface WebProduct {
     id: string;
@@ -181,6 +182,29 @@ function ProductCard({ product, index, onDelete }: {
     onDelete: (id: string) => void;
 }) {
     const [isHovered, setIsHovered] = useState(false);
+    const [showAddedNotification, setShowAddedNotification] = useState(false);
+    const [imageError, setImageError] = useState(false);
+    const addItem = useCartStore((state) => state.addItem);
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        addItem({
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            category: product.category
+        });
+
+        setShowAddedNotification(true);
+        setTimeout(() => setShowAddedNotification(false), 2000);
+    };
+
+    const handleImageError = () => {
+        setImageError(true);
+    };
 
     return (
         <motion.div
@@ -193,16 +217,50 @@ function ProductCard({ product, index, onDelete }: {
         >
             {/* Image Container */}
             <div className="relative aspect-square bg-gradient-to-br from-neutral-900 to-black p-6 overflow-hidden">
-                <motion.img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-contain relative z-10"
-                    animate={{
-                        scale: isHovered ? 1.1 : 1,
-                        rotate: isHovered ? 5 : 0
-                    }}
-                    transition={{ duration: 0.4 }}
-                />
+                {!imageError ? (
+                    <motion.img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-contain relative z-10"
+                        onError={handleImageError}
+                        animate={{
+                            scale: isHovered ? 1.1 : 1,
+                            rotate: isHovered ? 5 : 0
+                        }}
+                        transition={{ duration: 0.4 }}
+                    />
+                ) : (
+                    <motion.div
+                        className="w-full h-full flex items-center justify-center relative z-10"
+                        animate={{
+                            scale: isHovered ? 1.05 : 1,
+                        }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        {/* Jewelry Placeholder SVG */}
+                        <svg 
+                            className="w-32 h-32 text-luxury-gold/40" 
+                            viewBox="0 0 200 200" 
+                            fill="currentColor"
+                        >
+                            {/* Diamond/Gem Icon */}
+                            <path d="M100 20 L140 60 L120 140 L100 160 L80 140 L60 60 Z" 
+                                  stroke="currentColor" 
+                                  strokeWidth="3" 
+                                  fill="none" 
+                                  className="animate-pulse" />
+                            <path d="M60 60 L100 100 L140 60" 
+                                  stroke="currentColor" 
+                                  strokeWidth="2" 
+                                  opacity="0.5" />
+                            <path d="M80 140 L100 100 L120 140" 
+                                  stroke="currentColor" 
+                                  strokeWidth="2" 
+                                  opacity="0.5" />
+                            <circle cx="100" cy="100" r="4" fill="currentColor" />
+                        </svg>
+                    </motion.div>
+                )}
 
                 {/* Glow Effect */}
                 <div className="absolute inset-0 bg-gradient-to-t from-luxury-gold/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -245,17 +303,46 @@ function ProductCard({ product, index, onDelete }: {
                     </span>
                 </div>
 
-                {/* Try On Button */}
-                <Link
-                    href={`/try/photo?product=${product.id}&img=${encodeURIComponent(product.image)}&cat=${product.category}`}
-                    className="block w-full py-3.5 btn-primary text-center font-semibold flex items-center justify-center gap-2"
-                >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Try On Now
-                </Link>
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                    {/* Add to Cart Button */}
+                    <motion.button
+                        onClick={handleAddToCart}
+                        className="w-full py-3.5 bg-gradient-to-r from-luxury-gold via-luxury-champagne to-luxury-gold text-black font-bold rounded-lg hover:shadow-gold transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden group/btn"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span>Add to Cart</span>
+                        {showAddedNotification && (
+                            <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0 bg-green-500 flex items-center justify-center gap-2"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Added!
+                            </motion.div>
+                        )}
+                    </motion.button>
+
+                    {/* Try On Button */}
+                    <Link
+                        href={`/try/photo?product=${product.id}&img=${encodeURIComponent(product.image)}&cat=${product.category}`}
+                        className="block w-full py-3.5 glass-luxury text-white text-center font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Try On Now
+                    </Link>
+                </div>
             </div>
         </motion.div>
     );

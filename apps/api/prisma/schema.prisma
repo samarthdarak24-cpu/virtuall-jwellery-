@@ -12,6 +12,8 @@ model User {
   email     String      @unique
   password  String?
   name      String?
+  avatarUrl String?
+  avatarType String?    // 'vrm' or 'glb'
   createdAt DateTime    @default(now())
   images    UserImage[]
   orders    Order[]

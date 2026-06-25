@@ -48,51 +48,35 @@
     "description": "Beautiful gold necklace with intricate design"
   },
   {
-    "id": "1777718035074",
-    "name": "NECKLACE",
-    "price": 234,
-    "category": "necklace",
-    "image": "/uploads/product-1777718034507.png",
-    "createdAt": "2026-05-02T10:33:55.074Z"
-  },
-  {
-    "id": "1777718291706",
+    "id": "1781813912819",
     "name": "neck",
-    "price": 10,
+    "price": 45,
     "category": "necklace",
-    "image": "/uploads/product-1777718291340.png",
-    "createdAt": "2026-05-02T10:38:11.706Z"
+    "image": "/uploads/product-1781813912271.png",
+    "createdAt": "2026-06-18T20:18:32.819Z"
   },
   {
-    "id": "1777724558523",
-    "name": "ear",
-    "price": 1200,
+    "id": "1782420349688",
+    "name": "earings",
+    "price": 120,
     "category": "earring",
-    "image": "/uploads/product-1777724558387.png",
-    "createdAt": "2026-05-02T12:22:38.523Z"
+    "image": "/uploads/product-1782420349460.png",
+    "createdAt": "2026-06-25T20:45:49.688Z"
   },
   {
-    "id": "1777725823397",
-    "name": "bbann",
-    "price": 3456,
-    "category": "bracelet",
-    "image": "/uploads/product-1777725823127.png",
-    "createdAt": "2026-05-02T12:43:43.397Z"
+    "id": "1782421232247",
+    "name": "Necklace",
+    "price": 1200,
+    "category": "necklace",
+    "image": "/uploads/product-1782421232044.png",
+    "createdAt": "2026-06-25T21:00:32.247Z"
   },
   {
-    "id": "1777726533580",
-    "name": "brace",
-    "price": 35678,
-    "category": "bracelet",
-    "image": "/uploads/product-1777726533322.png",
-    "createdAt": "2026-05-02T12:55:33.580Z"
-  },
-  {
-    "id": "1777727043656",
-    "name": "ring",
-    "price": 6789,
-    "category": "ring",
-    "image": "/uploads/product-1777727043417.png",
-    "createdAt": "2026-05-02T13:04:03.656Z"
+    "id": "1782421876097",
+    "name": "necklace",
+    "price": 200,
+    "category": "necklace",
+    "image": "/uploads/product-1782421875760.png",
+    "createdAt": "2026-06-25T21:11:16.097Z"
   }
 ]

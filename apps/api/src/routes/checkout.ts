@@ -5,9 +5,13 @@ import { authenticate, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2023-10-16',
-});
+
+// Initialize Stripe only if key is provided
+const stripe = process.env.STRIPE_SECRET_KEY 
+    ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: '2023-10-16',
+    })
+    : null;
 
 // Create checkout session
 router.post('/create-session', authenticate, async (req: AuthRequest, res, next) => {
@@ -24,7 +28,39 @@ router.post('/create-session', authenticate, async (req: AuthRequest, res, next)
             where: { id: { in: productIds } },
         });
 
-        // Create line items
+        // Calculate total
+        let totalCents = 0;
+        items.forEach((item: any) => {
+            const product = products.find(p => p.id === item.productId);
+            if (product) {
+                totalCents += product.priceCents * (item.quantity || 1);
+            }
+        });
+
+        // DEV MODE: If no Stripe key, create order directly and redirect to success
+        if (!stripe) {
+            console.log('⚠️  DEMO MODE: No Stripe key configured. Creating order without payment...');
+            
+            // Create order directly (demo mode)
+            const order = await prisma.order.create({
+                data: {
+                    userId: req.userId!,
+                    totalCents: totalCents,
+                    status: 'pending', // In demo mode
+                },
+            });
+
+            // Return success URL for demo
+            const demoSessionId = `demo_${order.id}_${Date.now()}`;
+            return res.json({ 
+                sessionId: demoSessionId, 
+                url: `${process.env.CORS_ORIGIN}/checkout/success?session_id=${demoSessionId}`,
+                demo: true,
+                message: 'Demo mode: Order created without payment. Add STRIPE_SECRET_KEY to enable real payments.'
+            });
+        }
+
+        // PRODUCTION MODE: Create Stripe checkout session
         const lineItems = items.map((item: any) => {
             const product = products.find(p => p.id === item.productId);
             if (!product) throw new Error('Product not found');
@@ -61,6 +97,10 @@ router.post('/create-session', authenticate, async (req: AuthRequest, res, next)
 
 // Stripe webhook handler
 router.post('/webhooks/stripe', async (req, res, next) => {
+    if (!stripe) {
+        return res.status(400).json({ error: 'Stripe not configured' });
+    }
+
     const sig = req.headers['stripe-signature'] as string;
 
     try {
