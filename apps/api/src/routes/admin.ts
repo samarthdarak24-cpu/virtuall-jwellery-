@@ -98,8 +98,10 @@ router.post('/products/:id/assets', async (req: AuthRequest, res, next) => {
 
         const asset = await prisma.productAsset.create({
             data: {
-                ...data,
                 productId: id,
+                type: data.type,
+                url: data.url,
+                metadata: data.metadata ? JSON.stringify(data.metadata) : null,
             },
         });
 
