@@ -19,8 +19,10 @@ router.post('/events', optionalAuth, async (req: AuthRequest, res, next) => {
 
         const event = await prisma.tryOnEvent.create({
             data: {
-                ...data,
-                userId: req.userId,
+                mode: data.mode,
+                userId: req.userId || null,
+                productId: data.productId || null,
+                metadata: data.metadata ? JSON.stringify(data.metadata) : null,
             },
         });
 

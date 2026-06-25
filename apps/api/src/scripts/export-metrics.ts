@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { createObjectCsvWriter } from 'csv-writer';
+// import { createObjectCsvWriter } from 'csv-writer';
 import path from 'path';
+import * as fs from 'fs';
 
 const prisma = new PrismaClient();
 
@@ -24,18 +25,6 @@ async function exportMetrics() {
         },
     });
 
-    const csvWriter = createObjectCsvWriter({
-        path: path.join(process.cwd(), 'metrics-export.csv'),
-        header: [
-            { id: 'id', title: 'Event ID' },
-            { id: 'mode', title: 'Mode' },
-            { id: 'userEmail', title: 'User Email' },
-            { id: 'productSku', title: 'Product SKU' },
-            { id: 'productTitle', title: 'Product Title' },
-            { id: 'createdAt', title: 'Timestamp' },
-        ],
-    });
-
     const records = tryOnEvents.map(event => ({
         id: event.id,
         mode: event.mode,
@@ -45,8 +34,11 @@ async function exportMetrics() {
         createdAt: event.createdAt.toISOString(),
     }));
 
-    await csvWriter.writeRecords(records);
-    console.log(`✅ Exported ${records.length} events to metrics-export.csv`);
+    // Export as JSON instead of CSV
+    const outputPath = path.join(process.cwd(), 'metrics-export.json');
+    fs.writeFileSync(outputPath, JSON.stringify(records, null, 2));
+    
+    console.log(`✅ Exported ${records.length} events to metrics-export.json`);
 }
 
 exportMetrics()

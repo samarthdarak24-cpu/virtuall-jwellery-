@@ -34,8 +34,9 @@ router.post('/images', async (req: AuthRequest, res, next) => {
 
         const image = await prisma.userImage.create({
             data: {
-                ...data,
+                url: data.url,
                 userId: req.userId!,
+                meta: data.meta ? JSON.stringify(data.meta) : null,
             },
         });
 
